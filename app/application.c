@@ -458,6 +458,27 @@ void bc_radio_on_buffer(uint64_t *peer_device_address, uint8_t *buffer, size_t *
 
     	}
     }
+    else
+    {
+        switch (buffer[0])
+        {
+            case RADIO_ACCELEROMETER:
+            {
+                bc_lis2dh12_result_g_t result;
+                char string[128];
+
+                sscanf((char *) buffer + 1, "%f,%f,%f", &result.x_axis, &result.y_axis, &result.z_axis);
+                sprintf(string, "[\"%012llx/accelerometer/-/acceleration\", [%0.2f,%0.2f,%0.2f]]\n", *peer_device_address, result.x_axis, result.y_axis, result.z_axis);
+                usb_talk_send_string(string);
+                break;
+            }
+        default:
+        {
+            break;
+        }
+
+        }
+    }
 
 }
 
